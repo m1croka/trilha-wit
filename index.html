@@ -522,16 +522,12 @@
         </p>
 
         <div class="card-actions">
-
-          <a
+          <button
             class="play"
-            href="https://forms.gle/DRFU9c3ABQCzHwsc7"
-            target="_blank"
-            rel="noopener noreferrer"
-            onclick="markStarted(1)"
+            onclick="acessarMissao(1)"
           >
             ACESSAR MISSÃO
-          </a>
+          </button>
 
           <button
             class="done"
@@ -573,16 +569,12 @@
         </p>
 
         <div class="card-actions">
-
-          <a
+          <button
             class="play"
-            href="https://www.instagram.com/reel/DWzYlABA"
-            target="_blank"
-            rel="noopener noreferrer"
-            onclick="markStarted(2)"
+            onclick="acessarMissao(2)"
           >
             ACESSAR MISSÃO
-          </a>
+          </button>
 
           <button
             class="done"
@@ -624,16 +616,12 @@
         </p>
 
         <div class="card-actions">
-
-          <a
+          <button
             class="play"
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-            onclick="markStarted(3)"
+            onclick="acessarMissao(3)"
           >
             ACESSAR MISSÃO
-          </a>
+          </button>
 
           <button
             class="done"
@@ -675,16 +663,12 @@
         </p>
 
         <div class="card-actions">
-
-          <a
+          <button
             class="play"
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-            onclick="markStarted(4)"
+            onclick="acessarMissao(4)"
           >
             ACESSAR MISSÃO
-          </a>
+          </button>
 
           <button
             class="done"
@@ -726,16 +710,12 @@
         </p>
 
         <div class="card-actions">
-
-          <a
+          <button
             class="play"
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-            onclick="markStarted(5)"
+            onclick="acessarMissao(5)"
           >
             ACESSAR MISSÃO
-          </a>
+          </button>
 
           <button
             class="done"
@@ -777,16 +757,12 @@
         </p>
 
         <div class="card-actions">
-
-          <a
+          <button
             class="play"
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-            onclick="markStarted(6)"
+            onclick="acessarMissao(6)"
           >
             ACESSAR MISSÃO
-          </a>
+          </button>
 
           <button
             class="done"
@@ -838,6 +814,71 @@
     const total = 6;
 
     const key = 'wit-levels-concluidos-v1';
+
+    /*
+      CÓDIGOS SECRETOS DE CADA LEVEL
+      Você pode trocar as palavras abaixo quando quiser.
+      Exemplo:
+      1: 'WIT2026'
+    */
+
+    const codigos = {
+      1: 'entrada',
+      2: 'inspiracao',
+      3: 'desafio',
+      4: 'exploracao',
+      5: 'criatividade',
+      6: 'conquista'
+    };
+
+    /*
+      LINKS DE CADA MISSÃO
+      Troque os links com # pelos links reais das suas atividades.
+    */
+
+    const links = {
+      1: 'https://forms.gle/DRFU9c3ABQCzHwsc7',
+      2: 'https://www.instagram.com/reel/DWzYlABA',
+      3: '#',
+      4: '#',
+      5: '#',
+      6: '#'
+    };
+
+    function acessarMissao(level){
+
+      const codigoDigitado = prompt(
+        'Digite o código secreto para liberar esta missão:'
+      );
+
+      if(!codigoDigitado){
+        return;
+      }
+
+      const codigoCorreto =
+      codigos[level].toLowerCase();
+
+      const codigoInformado =
+      codigoDigitado.trim().toLowerCase();
+
+      if(codigoInformado === codigoCorreto){
+
+        alert(
+          'Código correto! Missão liberada.'
+        );
+
+        window.open(
+          links[level],
+          '_blank'
+        );
+
+      }else{
+
+        alert(
+          'Código incorreto! Tente novamente.'
+        );
+      }
+    }
 
     function getDone(){
 
@@ -905,14 +946,6 @@
       saveDone(done);
 
       updateUI();
-    }
-
-    function markStarted(level){
-
-      console.log(
-        'Missão iniciada:',
-        level
-      );
     }
 
     function resetProgress(){
