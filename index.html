@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Missão WIT: Trilha de Levels</title>
+
+  <style>
+    :root{
+      --azul:#0bd3ff;
+      --azul2:#265bff;
+      --roxo:#8b5cf6;
+      --rosa:#ff4fd8;
+      --escuro:#090a2a;
+      --card:rgba(13,21,61,.78);
+      --texto:#f4fbff;
+      --suave:#b8d8ff;
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    body{
+      margin:0;
+      font-family:'Segoe UI', Arial, sans-serif;
+      color:var(--texto);
+
+      background:
+      radial-gradient(circle at top left, #243bff55, transparent 35%),
+      radial-gradient(circle at top right, #ff4fd855, transparent 30%),
+      linear-gradient(135deg, #05051b, #081a48 55%, #140d3c);
+
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:.25;
+
+      background-image:
+      radial-gradient(#7df3ff 1.3px, transparent 1.3px);
+
+      background-size:28px 28px;
+    }
+
+    .wrap{
+      max-width:1180px;
+      margin:auto;
+      padding:32px 18px 56px;
+      position:relative;
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns:1.1fr .9fr;
+      gap:28px;
+      align-items:center;
+
+      padding:28px;
+
+      border:1px solid #6ee7ff55;
+
+      background:
+      linear-gradient(
+      135deg,
+      rgba(10,20,60,.88),
+      rgba(59,21,112,.72)
+      );
+
+      border-radius:34px;
+
+      box-shadow:
+      0 0 34px #00d5ff33,
+      inset 0 0 28px #ffffff12;
+    }
+
+    .kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+
+      padding:8px 14px;
+
+      border-radius:999px;
+
+      background:#00d5ff22;
+      border:1px solid #72efff66;
+
+      color:#9ff8ff;
+
+      font-weight:700;
+      letter-spacing:.08em;
+      font-size:.83rem;
+    }
+
+    h1{
+      font-size:clamp(2.1rem, 5vw, 4.6rem);
+      line-height:1;
+      margin:18px 0 12px;
+      text-transform:uppercase;
+      text-shadow:0 0 18px #12e7ff88;
+    }
+
+    .gradient{
+      background:linear-gradient(90deg, #72efff, #ff72df, #fff36e);
+
+      -webkit-background-clip:text;
+      background-clip:text;
+
+      color:transparent;
+    }
+
+    .hero p{
+      color:var(--suave);
+      font-size:1.12rem;
+      line-height:1.55;
+      max-width:680px;
+    }
+
+    .hero img{
+      width:min(100%,360px);
+
+      filter:
+      drop-shadow(0 0 28px #00d5ff88);
+
+      animation:float 4s ease-in-out infinite;
+
+      justify-self:center;
+    }
+
+    @keyframes float{
+      0%,100%{
+        transform:translateY(0) rotate(-1deg);
+      }
+
+      50%{
+        transform:translateY(-12px) rotate(1deg);
+      }
+    }
+
+    .panel{
+      margin:22px 0;
+
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    .progress-box{
+      flex:1;
+      min-width:260px;
+    }
+
+    .bar{
+      width:100%;
+      height:18px;
+
+      background:#ffffff15;
+
+      border-radius:999px;
+      overflow:hidden;
+
+      border:1px solid #ffffff1f;
+    }
+
+    .bar span{
+      display:block;
+      height:100%;
+      width:0%;
+
+      background:
+      linear-gradient(90deg, #72efff, #ff72df, #fff36e);
+
+      border-radius:999px;
+
+      transition:.4s;
+    }
+
+    .progress-text{
+      margin-top:8px;
+      color:#d9f6ff;
+      font-weight:700;
+    }
+
+    .reset{
+      border:0;
+      cursor:pointer;
+
+      padding:14px 20px;
+
+      border-radius:18px;
+
+      font-weight:900;
+
+      color:#061237;
+
+      background:
+      linear-gradient(135deg,#7df3ff,#fff36e);
+
+      box-shadow:0 0 20px #7df3ff55;
+    }
+
+    .map{
+      position:relative;
+
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:22px;
+
+      margin-top:34px;
+    }
+
+    .map::before{
+      content:"";
+      position:absolute;
+
+      top:50%;
+      left:8%;
+      right:8%;
+
+      height:8px;
+
+      border-radius:999px;
+
+      background:
+      linear-gradient(90deg,#72efff,#ff72df,#fff36e);
+
+      opacity:.18;
+
+      z-index:0;
+    }
+
+    .level-card{
+      position:relative;
+      z-index:1;
+
+      background:var(--card);
+
+      border:1px solid #7df3ff22;
+
+      border-radius:28px;
+
+      padding:22px;
+
+      backdrop-filter:blur(8px);
+
+      transition:.3s;
+
+      box-shadow:
+      0 0 18px #00000025,
+      inset 0 0 18px #ffffff08;
+    }
+
+    .level-card:hover{
+      transform:translateY(-6px) scale(1.02);
+
+      border-color:#72efff88;
+
+      box-shadow:
+      0 0 28px #00d5ff44,
+      inset 0 0 18px #ffffff12;
+    }
+
+    .level-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:16px;
+    }
+
+    .badge{
+      padding:8px 12px;
+
+      border-radius:999px;
+
+      background:#ffffff12;
+
+      border:1px solid #ffffff22;
+
+      font-size:.8rem;
+      font-weight:800;
+      letter-spacing:.08em;
+    }
+
+    .icon{
+      font-size:1.6rem;
+    }
+
+    .level-card h3{
+      margin:0 0 10px;
+      font-size:1.25rem;
+    }
+
+    .level-card p{
+      color:#cfe7ff;
+      line-height:1.5;
+      min-height:48px;
+    }
+
+    .card-actions{
+      display:grid;
+      gap:10px;
+      margin-top:16px;
+    }
+
+    .play,
+    .done{
+      text-align:center;
+      text-decoration:none;
+
+      border:0;
+
+      border-radius:16px;
+
+      padding:12px;
+
+      font-weight:900;
+
+      cursor:pointer;
+    }
+
+    .play{
+      color:#061237;
+
+      background:
+      linear-gradient(135deg,#7df3ff,#fff36e);
+    }
+
+    .done{
+      color:white;
+
+      background:#ffffff18;
+      border:1px solid #ffffff35;
+    }
+
+    .level-card.completed{
+      border-color:#fff36e;
+
+      box-shadow:0 0 26px #fff36e44;
+    }
+
+    .level-card.completed .done{
+      background:
+      linear-gradient(135deg,#20e3b2,#7df3ff);
+
+      color:#061237;
+    }
+
+    .helper{
+      margin-top:30px;
+
+      display:grid;
+      grid-template-columns:120px 1fr;
+      gap:18px;
+      align-items:center;
+
+      padding:18px;
+
+      border-radius:26px;
+
+      background:#ffffff10;
+      border:1px solid #ffffff22;
+    }
+
+    .helper img{
+      width:120px;
+
+      filter:
+      drop-shadow(0 0 18px #00d5ff);
+    }
+
+    .helper strong{
+      color:#fff36e;
+    }
+
+    footer{
+      text-align:center;
+      color:#a9c8ff;
+      margin-top:28px;
+    }
+
+    @media (max-width:900px){
+
+      .hero{
+        grid-template-columns:1fr;
+        text-align:center;
+      }
+
+      .hero p{
+        margin-inline:auto;
+      }
+
+      .map{
+        grid-template-columns:1fr 1fr;
+      }
+
+      .map::before{
+        display:none;
+      }
+    }
+
+    @media (max-width:620px){
+
+      .map{
+        grid-template-columns:1fr;
+      }
+
+      .helper{
+        grid-template-columns:1fr;
+        text-align:center;
+      }
+
+      .helper img{
+        margin:auto;
+      }
+
+      .hero{
+        padding:20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="wrap">
+
+    <section class="hero">
+
+      <div>
+
+        <span class="kicker">
+          🤖 NÚCLEO WIT • TRILHA GAMIFICADA
+        </span>
+
+        <h1>
+          Missão
+          <span class="gradient">
+            Levels Digitais
+          </span>
+        </h1>
+
+        <p>
+          Complete os desafios na ordem da trilha.
+          Cada botão abre uma missão diferente:
+          formulário, vídeo, enquetes e atividades interativas.
+        </p>
+
+      </div>
+
+      <!-- NOVO ROBÔ -->
+      <img
+        src="robo_coracao.png"
+        alt="Robô WIT feliz"
+      />
+
+    </section>
+
+    <section class="panel">
+
+      <div class="progress-box">
+
+        <div class="bar">
+          <span id="progress"></span>
+        </div>
+
+        <div
+          class="progress-text"
+          id="progressText"
+        >
+          0 de 6 missões concluídas
+        </div>
+
+      </div>
+
+      <button
+        class="reset"
+        onclick="resetProgress()"
+      >
+        REINICIAR TRILHA
+      </button>
+
+    </section>
+
+    <section
+      class="map"
+      aria-label="Linha de levels"
+    >
+
+      <!-- LEVEL 1 -->
+
+      <article
+        class="level-card"
+        data-level="1"
+      >
+
+        <div class="level-top">
+
+          <span class="badge">
+            LEVEL 01
+          </span>
+
+          <span class="icon">
+            📝
+          </span>
+
+        </div>
+
+        <h3>
+          PORTAL DE ENTRADA
+        </h3>
+
+        <p>
+          FORMULÁRIO DE ACESSO
+        </p>
+
+        <div class="card-actions">
+
+          <a
+            class="play"
+            href="https://forms.gle/DRFU9c3ABQCzHwsc7"
+            target="_blank"
+            rel="noopener noreferrer"
+            onclick="markStarted(1)"
+          >
+            ACESSAR MISSÃO
+          </a>
+
+          <button
+            class="done"
+            onclick="toggleDone(1)"
+            id="done-1"
+          >
+            MARCAR COMO CONCLUÍDO
+          </button>
+
+        </div>
+
+      </article>
+
+      <!-- LEVEL 2 -->
+
+      <article
+        class="level-card"
+        data-level="2"
+      >
+
+        <div class="level-top">
+
+          <span class="badge">
+            LEVEL 02
+          </span>
+
+          <span class="icon">
+            🎬
+          </span>
+
+        </div>
+
+        <h3>
+          MISSÃO INSPIRAÇÃO
+        </h3>
+
+        <p>
+          VÍDEO CURTO PARA CONEXÃO
+        </p>
+
+        <div class="card-actions">
+
+          <a
+            class="play"
+            href="https://www.instagram.com/reel/DWzYlABA"
+            target="_blank"
+            rel="noopener noreferrer"
+            onclick="markStarted(2)"
+          >
+            ACESSAR MISSÃO
+          </a>
+
+          <button
+            class="done"
+            onclick="toggleDone(2)"
+            id="done-2"
+          >
+            MARCAR COMO CONCLUÍDO
+          </button>
+
+        </div>
+
+      </article>
+
+      <!-- LEVEL 3 -->
+
+      <article
+        class="level-card"
+        data-level="3"
+      >
+
+        <div class="level-top">
+
+          <span class="badge">
+            LEVEL 03
+          </span>
+
+          <span class="icon">
+            🎮
+          </span>
+
+        </div>
+
+        <h3>
+          DESAFIO DIGITAL
+        </h3>
+
+        <p>
+          ATIVIDADE INTERATIVA
+        </p>
+
+        <div class="card-actions">
+
+          <a
+            class="play"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            onclick="markStarted(3)"
+          >
+            ACESSAR MISSÃO
+          </a>
+
+          <button
+            class="done"
+            onclick="toggleDone(3)"
+            id="done-3"
+          >
+            MARCAR COMO CONCLUÍDO
+          </button>
+
+        </div>
+
+      </article>
+
+      <!-- LEVEL 4 -->
+
+      <article
+        class="level-card"
+        data-level="4"
+      >
+
+        <div class="level-top">
+
+          <span class="badge">
+            LEVEL 04
+          </span>
+
+          <span class="icon">
+            📚
+          </span>
+
+        </div>
+
+        <h3>
+          ESTAÇÃO WIT
+        </h3>
+
+        <p>
+          EXPLORAÇÃO DE CONTEÚDO
+        </p>
+
+        <div class="card-actions">
+
+          <a
+            class="play"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            onclick="markStarted(4)"
+          >
+            ACESSAR MISSÃO
+          </a>
+
+          <button
+            class="done"
+            onclick="toggleDone(4)"
+            id="done-4"
+          >
+            MARCAR COMO CONCLUÍDO
+          </button>
+
+        </div>
+
+      </article>
+
+      <!-- LEVEL 5 -->
+
+      <article
+        class="level-card"
+        data-level="5"
+      >
+
+        <div class="level-top">
+
+          <span class="badge">
+            LEVEL 05
+          </span>
+
+          <span class="icon">
+            💡
+          </span>
+
+        </div>
+
+        <h3>
+          MISSÃO CRIATIVA
+        </h3>
+
+        <p>
+          DESAFIO DE CRIAÇÃO
+        </p>
+
+        <div class="card-actions">
+
+          <a
+            class="play"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            onclick="markStarted(5)"
+          >
+            ACESSAR MISSÃO
+          </a>
+
+          <button
+            class="done"
+            onclick="toggleDone(5)"
+            id="done-5"
+          >
+            MARCAR COMO CONCLUÍDO
+          </button>
+
+        </div>
+
+      </article>
+
+      <!-- LEVEL 6 -->
+
+      <article
+        class="level-card"
+        data-level="6"
+      >
+
+        <div class="level-top">
+
+          <span class="badge">
+            LEVEL 06
+          </span>
+
+          <span class="icon">
+            🏆
+          </span>
+
+        </div>
+
+        <h3>
+          CONQUISTA FINAL
+        </h3>
+
+        <p>
+          ENCERRAMENTO DA TRILHA
+        </p>
+
+        <div class="card-actions">
+
+          <a
+            class="play"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            onclick="markStarted(6)"
+          >
+            ACESSAR MISSÃO
+          </a>
+
+          <button
+            class="done"
+            onclick="toggleDone(6)"
+            id="done-6"
+          >
+            MARCAR COMO CONCLUÍDO
+          </button>
+
+        </div>
+
+      </article>
+
+    </section>
+
+    <!-- CAIXA DICA -->
+
+    <section class="helper">
+
+      <!-- NOVO ROBÔ -->
+      <img
+        src="robo_duvida.png"
+        alt="Robô WIT pensando"
+      />
+
+      <p>
+
+        <strong>
+          DICA DO CÓDI:
+        </strong>
+
+        abra uma missão por vez,
+        realize a proposta com atenção
+        e volte para esta página para marcar sua conquista.
+        Ao final, confira sua barra de progresso completa.
+
+      </p>
+
+    </section>
+
+    <footer>
+      Material interativo do Núcleo WIT • Aprender, criar e compartilhar
+    </footer>
+
+  </main>
+
+  <script>
+
+    const total = 6;
+
+    const key = 'wit-levels-concluidos-v1';
+
+    function getDone(){
+
+      return JSON.parse(
+        localStorage.getItem(key) || '[]'
+      );
+    }
+
+    function saveDone(arr){
+
+      localStorage.setItem(
+        key,
+        JSON.stringify(arr)
+      );
+    }
+
+    function updateUI(){
+
+      const done = getDone();
+
+      document
+      .querySelectorAll('.level-card')
+      .forEach(card => {
+
+        const lvl = Number(card.dataset.level);
+
+        const btn =
+        document.getElementById('done-' + lvl);
+
+        if(done.includes(lvl)){
+
+          card.classList.add('completed');
+
+          btn.textContent =
+          'MISSÃO CONCLUÍDA ✅';
+
+        }else{
+
+          card.classList.remove('completed');
+
+          btn.textContent =
+          'MARCAR COMO CONCLUÍDO';
+        }
+      });
+
+      const pct =
+      Math.round((done.length / total) * 100);
+
+      document.getElementById('progress')
+      .style.width = pct + '%';
+
+      document.getElementById('progressText')
+      .textContent =
+      `${done.length} de ${total} missões concluídas`;
+    }
+
+    function toggleDone(level){
+
+      let done = getDone();
+
+      done = done.includes(level)
+      ? done.filter(x => x !== level)
+      : [...done, level].sort((a,b)=>a-b);
+
+      saveDone(done);
+
+      updateUI();
+    }
+
+    function markStarted(level){
+
+      console.log(
+        'Missão iniciada:',
+        level
+      );
+    }
+
+    function resetProgress(){
+
+      saveDone([]);
+
+      updateUI();
+    }
+
+    updateUI();
+
+  </script>
+
+</body>
+</html>
